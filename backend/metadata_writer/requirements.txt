@@ -22,7 +22,7 @@ durationpy==0.10
     # via kubernetes
 google-auth==2.55.2
     # via kubernetes
-grpcio==1.81.1
+grpcio==1.80.0
     # via ml-metadata
 idna==3.18
     # via requests

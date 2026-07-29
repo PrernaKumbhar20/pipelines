@@ -4,7 +4,14 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 RUN python3 -m pip install --no-cache-dir 'wheel>=0.46.2'
 COPY backend/metadata_writer/requirements.txt /kfp/metadata_writer/
-RUN python3 -m pip install --no-cache-dir -r /kfp/metadata_writer/requirements.txt
+RUN if [ "$TARGETARCH" = "ppc64le" ]; then \
+      /usr/local/bin/pip3 install --no-cache-dir \
+        --extra-index-url https://wheels.developerfirst.ibm.com/ppc64le/linux \
+        -r /kfp/metadata_writer/requirements.txt; \
+    else \
+      /usr/local/bin/pip3 install --no-cache-dir \
+        -r /kfp/metadata_writer/requirements.txt; \
+    fi
 
 COPY backend/metadata_writer/src/* /kfp/metadata_writer/
 CMD python3 -u /kfp/metadata_writer/metadata_writer.py
