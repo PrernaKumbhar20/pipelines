@@ -5,11 +5,16 @@ RUN apt-get update \
 RUN python3 -m pip install --no-cache-dir 'wheel>=0.46.2'
 COPY backend/metadata_writer/requirements.txt /kfp/metadata_writer/
 RUN if [ "$TARGETARCH" = "ppc64le" ]; then \
-      /usr/local/bin/pip3 install --no-cache-dir \
+      apt-get update \
+      && apt-get install -y --no-install-recommends g++ make \
+      && /usr/local/bin/pip3 install --no-cache-dir \
         --trusted-host 10.20.186.132 \
         --extra-index-url http://10.20.186.132:8000/ \
         --extra-index-url https://wheels.developerfirst.ibm.com/ppc64le/linux \
-        -r /kfp/metadata_writer/requirements.txt; \
+        -r /kfp/metadata_writer/requirements.txt \
+      && apt-get remove -y g++ make \
+      && apt-get autoremove -y \
+      && rm -rf /var/lib/apt/lists/*; \
     else \
       /usr/local/bin/pip3 install --no-cache-dir \
         -r /kfp/metadata_writer/requirements.txt; \
