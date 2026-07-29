@@ -4,6 +4,7 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 RUN python3 -m pip install --no-cache-dir 'wheel>=0.46.2'
 COPY backend/metadata_writer/requirements.txt /kfp/metadata_writer/
+ARG TARGETARCH
 RUN if [ "$TARGETARCH" = "ppc64le" ]; then \
       apt-get update \
       && apt-get install -y --no-install-recommends g++ make \
